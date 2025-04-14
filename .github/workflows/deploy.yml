@@ -1,4 +1,4 @@
-name: Build and Deploy Jekyll site to GitHub Pages
+name: Build and Deploy Jekyll site
 
 on:
   push:
@@ -9,25 +9,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.1.0
 
       - name: Install dependencies
         run: |
-          gem install bundler
+          gem install bundler -v 2.4.22
           bundle install
 
-      - name: Build the site with Jekyll
-        run: |
-          bundle exec jekyll build
+      - name: Build the site
+        run: jekyll build
 
       - name: Deploy to GitHub Pages
-        run: |
-          bundle exec jekyll deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: jekyll deploy
