@@ -1,11 +1,5 @@
 ---
 layout: home
-title: Welcome to My Blog
+title: Home
 ---
-
-# Welcome to My Blog!
-
-This is the homepage of my Jekyll blog. I will be posting about various topics here!
-
-Feel free to explore!
-
+Welcome to my Jekyll blog!
