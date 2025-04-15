@@ -1,32 +1,41 @@
-name: Build and Deploy Jekyll site
+name: Build and Deploy Jekyll site to GitHub Pages
 
 on:
   push:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up Ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1.0
+          ruby-version: 3.1
 
       - name: Install dependencies
         run: |
           gem install bundler -v 2.4.22
-          bundle install || echo "No Gemfile, skipping bundle install"
+          bundle install
 
-      - name: Build the site
-        run: jekyll build
+      - name: Build site with Jekyll
+        run: bundle exec jekyll build
 
-      - name: Upload site artifact
+      - name: Upload site to GitHub Pages
         uses: actions/upload-pages-artifact@v2
         with:
           path: _site
@@ -34,14 +43,11 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v2
